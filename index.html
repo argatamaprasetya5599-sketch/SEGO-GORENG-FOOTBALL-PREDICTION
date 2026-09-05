@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KARYA SEGOGORENG — Football Intelligence V3</title>
+<meta name="description" content="Premium historical football odds intelligence dashboard">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="orb orb1"></div><div class="orb orb2"></div>
+<header class="topbar">
+  <div class="brand"><div class="logo">KS</div><div><strong>KARYA SEGOGORENG</strong><small>FOOTBALL INTELLIGENCE • V3</small></div></div>
+  <div class="topnav"><span class="live"><i></i> LOCAL ENGINE</span><button id="importBtn" class="outline">IMPORT DATA</button><input id="fileInput" type="file" hidden multiple accept=".csv,.json,.xlsx,.xls"></div>
+</header>
+
+<main class="wrap">
+<section class="hero">
+ <div><span class="eyebrow">HISTORICAL ODDS INTELLIGENCE</span><h1>Turn market odds into<br><em>actionable signals.</em></h1><p>Match odds historis, cari pola paling mirip, ukur probability, settlement HDP/O-U, BTTS, hit rate, ROI, dan ranking <b>BEST VALUE</b> dalam satu dashboard.</p></div>
+ <div class="hero-card"><span>DATABASE</span><b id="dbCount">Loading…</b><small>historical matches</small><div class="hero-line"><i></i></div><small id="dbRange">Local dataset</small></div>
+</section>
+
+<section class="panel setup">
+ <div class="panel-title"><div><span>01 / MATCH PROFILE</span><h2>Build your market profile</h2></div><div class="mode"><button class="active" data-mode="teams">TEAM MODE</button><button data-mode="manual">MANUAL MODE</button></div></div>
+ <div class="fields">
+  <label>HOME TEAM<input id="homeTeam" list="teams" placeholder="Search team…"></label>
+  <label>AWAY TEAM<input id="awayTeam" list="teams" placeholder="Search team…"></label>
+  <label>COMPETITION<select id="competition"><option value="ALL">All competitions</option></select></label>
+  <datalist id="teams"></datalist>
+ </div>
+
+ <div class="market-tabs">
+  <button class="active" data-pack="full">FULL MARKET</button><button data-pack="1x2">1X2</button><button data-pack="hdp">HDP</button><button data-pack="ou">OVER / UNDER</button><button data-pack="btts">BTTS</button>
+ </div>
+ <div class="market-grid">
+  <div class="market"><header><b>1X2</b><small>Match result</small></header><div class="inputs"><label>HOME<input id="oneH" type="number" step=".01" placeholder="1.57"></label><label>DRAW<input id="oneD" type="number" step=".01" placeholder="4.32"></label><label>AWAY<input id="oneA" type="number" step=".01" placeholder="6.50"></label></div></div>
+  <div class="market"><header><b>ASIAN HANDICAP</b><small>Quarter-lines supported</small></header><div class="inputs"><label>LINE<input id="hdpLine" type="number" step=".25" placeholder="-0.75"></label><label>HOME<input id="hdpH" type="number" step=".01" placeholder="1.69"></label><label>AWAY<input id="hdpA" type="number" step=".01" placeholder="2.33"></label></div></div>
+  <div class="market"><header><b>OVER / UNDER</b><small>Quarter-lines supported</small></header><div class="inputs"><label>LINE<input id="ouLine" type="number" step=".25" placeholder="2.50"></label><label>OVER<input id="over" type="number" step=".01" placeholder="1.89"></label><label>UNDER<input id="under" type="number" step=".01" placeholder="2.04"></label></div></div>
+  <div class="market"><header><b>BTTS</b><small>Both teams to score</small></header><div class="inputs"><label>YES<input id="bttsY" type="number" step=".01" placeholder="1.80"></label><label>NO<input id="bttsN" type="number" step=".01" placeholder="2.00"></label><label>OPTIONAL<div class="optional">Historical score based</div></label></div></div>
+ </div>
+ <div class="controls">
+  <div><label>MINIMUM SAMPLE <b id="sampleVal">20</b></label><input id="sample" type="range" min="10" max="200" value="20"><small>10 <span>sample size</span> 200</small></div>
+  <div><label>SIMILARITY TOLERANCE <b id="tolVal">0.30</b></label><input id="tol" type="range" min=".10" max="1" value=".30" step=".05"><small>tight <span>odds distance</span> loose</small></div>
+  <div><label>TOP MATCHES <b id="topVal">50</b></label><input id="topN" type="range" min="10" max="100" value="50"><small>10 <span>shown</span> 100</small></div>
+ </div>
+ <div class="actions"><p>No date input required. Historical dates remain visible only in the evidence table.</p><button id="analyze" class="primary">RUN INTELLIGENCE <b>→</b></button></div>
+</section>
+
+<section class="dashboard">
+ <div class="dash-head"><div><span>02 / INTELLIGENCE BOARD</span><h2>Probability, edge & confidence</h2><p id="summary">Ready to analyze your market profile.</p></div><div class="badges"><b id="sampleBadge">—</b><b id="avgBadge">—</b></div></div>
+
+ <div class="best panel">
+   <div class="best-head"><div><span>★ BEST VALUE</span><h3>Top historical edges</h3><p>Ranking berbasis probability historis dan implied probability dari odds input.</p></div><div class="quality"><span>DATA QUALITY</span><b id="qualityText">—</b><div><i id="qualityBar"></i></div></div></div>
+   <div id="bestGrid" class="best-grid"></div>
+ </div>
+
+ <div id="signalGrid" class="signal-grid"></div>
+ <div id="metricGrid" class="metric-grid"></div>
+
+ <div class="panel evidence">
+  <div class="table-head"><div><span>03 / HISTORICAL EVIDENCE</span><h3>Closest matches</h3></div><span id="shown">0 matches</span></div>
+  <div class="table-wrap"><table><thead><tr><th>SIM</th><th>MATCH</th><th>DATE / COMPETITION</th><th>FT</th><th>HT</th><th>O2.5</th><th>BTTS</th><th>HDP LINE</th></tr></thead><tbody id="tbody"></tbody></table></div>
+ </div>
+
+ <div class="panel h2h">
+  <div class="table-head"><div><span>04 / TEAM HISTORY</span><h3>Head-to-head & cross-competition</h3></div><span id="h2hCount">0 direct matches</span></div>
+  <div class="h2hstats" id="h2hStats"></div>
+  <div class="table-wrap"><table><thead><tr><th>DATE</th><th>COMPETITION</th><th>MATCH</th><th>FT</th><th>O2.5</th><th>BTTS</th></tr></thead><tbody id="h2hBody"></tbody></table></div>
+ </div>
+</section>
+
+<footer><b>KARYA SEGOGORENG</b><span>Historical statistics are informational and do not guarantee future results.</span><span>V3 • Local-first • No API key required</span></footer>
+</main>
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+</body></html>
